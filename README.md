@@ -7,8 +7,8 @@
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
 ![Rust](https://img.shields.io/badge/Rust-2021-000000?logo=rust&logoColor=white)
 ![tests](https://img.shields.io/badge/tests-138%20passed-brightgreen)
-![platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows-lightgrey)
-[![Build Windows](https://github.com/Axuan4j/iKunTools/actions/workflows/build-windows.yml/badge.svg)](https://github.com/Axuan4j/iKunTools/actions/workflows/build-windows.yml)
+![platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey)
+[![Build](https://github.com/Axuan4j/iKunTools/actions/workflows/build.yml/badge.svg)](https://github.com/Axuan4j/iKunTools/actions/workflows/build.yml)
 
 JSON 格式化、正则调试、AES/RSA、JWT 解码、时间戳换算、HTTP 调试……这些事每天都在做，却总要在十几个网页之间来回切。iKunTools 把它们收进一个 18 MB 的原生窗口里：**打开就能用，断网也能用，输入的内容不会离开你的机器。**
 
@@ -71,13 +71,17 @@ IP 归属地使用 [ip2region](https://github.com/lionsoul2014/ip2region) 的离
 
 ## 安装
 
-暂无签名后的正式发布版本，安装包从 CI 或本地构建获取：
+前往 [Releases](https://github.com/Axuan4j/iKunTools/releases) 下载对应平台的安装包，文件名里带版本号与架构：
 
-- **Windows**：打开 [Build Windows](https://github.com/Axuan4j/iKunTools/actions/workflows/build-windows.yml) → 选最新一次成功的运行 → 下载 `iKunTools-windows-x64`，解压后是 NSIS 安装包（`-setup.exe`）与 `.msi`。
-- **macOS**：本地执行 `pnpm tauri build --bundles dmg`，产物 `.dmg` 拖进「应用程序」即可。
-- **绿色版**：直接运行可执行文件，但系统需已安装 WebView2 运行时（Win11 自带）。
+| 平台 | 产物 | 说明 |
+| --- | --- | --- |
+| macOS | `.dmg`（universal） | 通用二进制，Apple Silicon 与 Intel 同一份 |
+| Windows | `-setup.exe` | NSIS 安装向导，带开始菜单项 |
+| Windows | `.msi` | 适合企业批量部署 |
+| Linux | `.deb` | `sudo apt install ./iKunTools_*_amd64.deb` |
+| Linux | `.AppImage` | 免安装，`chmod +x` 后直接运行 |
 
-> 当前构建未做代码签名，首次打开需右键「打开」，或执行 `xattr -dr com.apple.quarantine /Applications/iKunTools.app`。
+> 构建未做代码签名。macOS 首次打开需右键「打开」，或 `xattr -dr com.apple.quarantine /Applications/iKunTools.app`；Windows 会被 SmartScreen 拦，点「更多信息 → 仍要运行」；Linux 的 deb 与 AppImage 都需要 `libwebkit2gtk-4.1`（Ubuntu 22.04+ 自带）。
 
 ## 从源码构建
 
@@ -101,8 +105,10 @@ pnpm tauri dev      # 带原生壳
 
 # 打包
 pnpm tauri build --bundles app        # macOS → .app
-pnpm tauri build --bundles dmg        # macOS → .dmg
-pnpm tauri build                      # Windows → msi + nsis（需在 Windows 上构建）
+pnpm tauri build --bundles dmg        # macOS → .dmg（当前架构）
+pnpm tauri build --target universal-apple-darwin --bundles dmg   # macOS 通用二进制
+pnpm tauri build --bundles deb,appimage                          # Linux → deb + AppImage
+pnpm tauri build --bundles nsis,msi                              # Windows → setup.exe + msi
 pnpm tauri build --no-bundle          # 只要可执行文件，绿色版
 
 # 质量门禁
@@ -110,9 +116,9 @@ pnpm typecheck      # tsc --noEmit
 pnpm test:core      # cargo test -p ikt-core
 ```
 
-产物位于 `target/release/bundle/`（workspace 根目录，不是 `src-tauri/` 下）。
+产物位于 `target/release/bundle/`（workspace 根目录，不是 `src-tauri/` 下）；跨架构构建时在 `target/<target-triple>/release/bundle/`。
 
-> Tauri 无法从 macOS 交叉编译出 Windows 安装包，Windows 产物必须在 Windows 环境（或 GitHub Actions 的 `windows-latest`）构建。
+> Tauri 不能交叉编译其他系统的安装包：Windows 包只能在 Windows 上出、Linux 包只能在 Linux 上出。CI 用 `macos-latest` / `ubuntu-22.04` / `windows-latest` 三台机器并行构建，打 `v*` 标签时自动汇总成 GitHub Release。
 
 ## 技术栈
 
