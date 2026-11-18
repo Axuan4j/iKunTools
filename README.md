@@ -8,6 +8,7 @@
 ![Rust](https://img.shields.io/badge/Rust-2021-000000?logo=rust&logoColor=white)
 ![tests](https://img.shields.io/badge/tests-138%20passed-brightgreen)
 ![platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows-lightgrey)
+[![Build Windows](https://github.com/Axuan4j/iKunTools/actions/workflows/build-windows.yml/badge.svg)](https://github.com/Axuan4j/iKunTools/actions/workflows/build-windows.yml)
 
 JSON 格式化、正则调试、AES/RSA、JWT 解码、时间戳换算、HTTP 调试……这些事每天都在做，却总要在十几个网页之间来回切。iKunTools 把它们收进一个 18 MB 的原生窗口里：**打开就能用，断网也能用，输入的内容不会离开你的机器。**
 
@@ -70,11 +71,11 @@ IP 归属地使用 [ip2region](https://github.com/lionsoul2014/ip2region) 的离
 
 ## 安装
 
-前往 Releases 下载对应平台的安装包：
+暂无签名后的正式发布版本，安装包从 CI 或本地构建获取：
 
-- macOS（Apple Silicon / Intel）：`.dmg`，拖进「应用程序」即可
-- Windows：`-setup.exe`（NSIS 安装向导）或 `.msi`
-- 绿色版：直接运行可执行文件，但系统需已安装 WebView2 运行时（Win11 自带）
+- **Windows**：打开 [Build Windows](https://github.com/Axuan4j/iKunTools/actions/workflows/build-windows.yml) → 选最新一次成功的运行 → 下载 `iKunTools-windows-x64`，解压后是 NSIS 安装包（`-setup.exe`）与 `.msi`。
+- **macOS**：本地执行 `pnpm tauri build --bundles dmg`，产物 `.dmg` 拖进「应用程序」即可。
+- **绿色版**：直接运行可执行文件，但系统需已安装 WebView2 运行时（Win11 自带）。
 
 > 当前构建未做代码签名，首次打开需右键「打开」，或执行 `xattr -dr com.apple.quarantine /Applications/iKunTools.app`。
 
@@ -109,7 +110,7 @@ pnpm typecheck      # tsc --noEmit
 pnpm test:core      # cargo test -p ikt-core
 ```
 
-产物位于 `src-tauri/target/release/bundle/`。
+产物位于 `target/release/bundle/`（workspace 根目录，不是 `src-tauri/` 下）。
 
 > Tauri 无法从 macOS 交叉编译出 Windows 安装包，Windows 产物必须在 Windows 环境（或 GitHub Actions 的 `windows-latest`）构建。
 
