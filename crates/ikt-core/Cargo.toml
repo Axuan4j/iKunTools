@@ -1,0 +1,33 @@
+[package]
+name = "ikt-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "iKunTools 核心逻辑：纯函数，不依赖 UI 框架"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["preserve_order"] }
+base64 = "0.22"
+hex = "0.4"
+md-5 = "0.10"
+sha1 = "0.10"
+sha2 = "0.10"
+blake3 = "1"
+hmac = "0.12"
+aes = "0.8"
+cipher = { version = "0.4", features = ["alloc"] }
+cbc = { version = "0.1", features = ["alloc"] }
+ctr = "0.9"
+ecb = { version = "0.1", features = ["alloc"] }
+aes-gcm = "0.10"
+pbkdf2 = "0.12"
+rsa = { version = "0.9", features = ["pem"] }
+rand = "0.8"
+regex = "1"
+xdb-parse = "0.2"
+quick-xml = "0.37"
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+thiserror = "2"
+zeroize = "1"
+ureq = "3"
