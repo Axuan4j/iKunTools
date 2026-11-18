@@ -213,4 +213,4 @@ iKunTools/
 
 [MIT](./LICENSE) © iKunTools contributors
 
-内置的 ip2region 数据文件遵循其上游 [Apache-2.0](https://github.com/lionsoul2014/ip2region/blob/master/LICENSE) 许可。
+内置的 `src-tauri/ip2region_v4.xdb` 来自 [ip2region](https://github.com/lionsoul2014/ip2region)，上游为 Apache-2.0 与 MIT 双许可（`Apache-2.0 OR MIT`），本项目按 MIT 条款使用。
