@@ -113,6 +113,8 @@ jobs:
     permissions:
       contents: write
     steps:
+      - uses: actions/checkout@v4
+
       - uses: actions/download-artifact@v4
         with:
           path: dist
@@ -124,11 +126,20 @@ jobs:
         run: |
           set -euo pipefail
           tag="${GITHUB_REF_NAME}"
-          ls -lh dist
-          if gh release view "$tag" >/dev/null 2>&1; then
-            gh release upload "$tag" dist/* --clobber
+          # download-artifact 会保留上传时的相对目录（deb/、nsis/ 等），要递归找
+          count=$(find dist -type f | wc -l)
+          if [ "$count" -eq 0 ]; then
+            echo "没有找到任何产物文件"
+            find dist -maxdepth 3 | sort
+            exit 1
+          fi
+          mapfile -t files < <(find dist -type f | sort)
+          printf '%s\n' "${files[@]}"
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$tag" "${files[@]}" --repo "$GITHUB_REPOSITORY" --clobber
           else
-            gh release create "$tag" dist/* \
+            gh release create "$tag" "${files[@]}" \
+              --repo "$GITHUB_REPOSITORY" \
               --title "iKunTools ${tag#v}" \
               --generate-notes
           fi
